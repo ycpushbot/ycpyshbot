@@ -10,21 +10,11 @@ from telethon.tl.custom import Button
 import random
 import threading
 
-# ============= Безопасный запуск =============
-import os, sys, atexit, signal
-LOCK_FILE = ".running.lock"
-if os.path.exists(LOCK_FILE):
-    print("⚠️ Этот бот уже запущен в этой папке.")
-    sys.exit(1)
-open(LOCK_FILE, "w").close()
-def _cleanup(*_):
-    try:
-        os.remove(LOCK_FILE)
-    except:
-        pass
-atexit.register(_cleanup)
-signal.signal(signal.SIGINT, _cleanup)
-signal.signal(signal.SIGTERM, _cleanup)
+# ============= Безопасный запуск + хранилище =============
+STORAGE_DIR = os.environ.get('STORAGE_DIR', '')
+if STORAGE_DIR:
+    os.makedirs(STORAGE_DIR, exist_ok=True)
+    os.chdir(STORAGE_DIR)  # data.json и сессии будут на постоянном диске
 print("🟢 Starting bot...")
 
 # ============= НАСТРОЙКИ =============
